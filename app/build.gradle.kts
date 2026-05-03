@@ -43,14 +43,8 @@ android {
 }
 
 dependencies {
-    // ── ApexAd SDK (composite build — resolved from ../apex-ad-sdk-android) ──
-    implementation(libs.apexads.core)
-    implementation(libs.apexads.banner)
-    implementation(libs.apexads.interstitial)
-    implementation(libs.apexads.native)
-    implementation(libs.apexads.video)
-    implementation(libs.apexads.appopen)
-    implementation(libs.apexads.wallet)
+    // ── ApexAd SDK (local AARs — app/libs/) ───────────────────────────────────
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
 
     // ── Compose ───────────────────────────────────────────────────────────────
     val composeBom = platform(libs.compose.bom)

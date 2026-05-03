@@ -46,14 +46,6 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 # Image loading
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
-# ApexAd SDK — resolved via composite build in settings.gradle.kts
-apexads-core = { group = "com.apexads", name = "sdk-core", version = "unspecified" }
-apexads-banner = { group = "com.apexads", name = "sdk-banner", version = "unspecified" }
-apexads-interstitial = { group = "com.apexads", name = "sdk-interstitial", version = "unspecified" }
-apexads-native = { group = "com.apexads", name = "sdk-native", version = "unspecified" }
-apexads-video = { group = "com.apexads", name = "sdk-video", version = "unspecified" }
-apexads-appopen = { group = "com.apexads", name = "sdk-appopen", version = "unspecified" }
-apexads-wallet = { group = "com.apexads", name = "sdk-wallet", version = "unspecified" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
