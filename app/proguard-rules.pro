@@ -1,0 +1,6 @@
+-keep class dagger.hilt.** { *; }
+-keep @dagger.hilt.android.lifecycle.HiltViewModel class * { *; }
+-keep class androidx.compose.** { *; }
+-dontwarn androidx.compose.**
+-keep class io.coil_kt.** { *; }
+-keep class com.apexads.sdk.** { public *; }

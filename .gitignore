@@ -1,0 +1,29 @@
+# Android / Gradle
+.gradle/
+build/
+**/build/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+
+# IntelliJ / Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+*.DS_Store
+captures/
+
+# Local config (never commit API keys / signing config)
+local.properties
+keystore.properties
+
+# Kotlin / Java misc
+*.kotlin_module
+out/
+
+# Generated
+gen/
+generated/

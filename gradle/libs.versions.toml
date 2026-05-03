@@ -1,0 +1,63 @@
+[versions]
+agp = "8.5.2"
+kotlin = "2.0.0"
+ksp = "2.0.0-1.0.24"
+coroutines = "1.8.1"
+lifecycle = "2.8.4"
+activity = "1.9.1"
+coreKtx = "1.13.1"
+compose-bom = "2024.09.00"
+navigation-compose = "2.8.3"
+hilt = "2.51.1"
+hilt-navigation = "1.2.0"
+coil = "2.7.0"
+
+[libraries]
+# Core
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+
+# Lifecycle
+lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+lifecycle-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
+lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+
+# Activity
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+
+# Compose (versions pinned via BOM)
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+
+# Navigation
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose" }
+
+# Hilt
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation" }
+
+# Image loading
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+
+# ApexAd SDK — resolved via composite build in settings.gradle.kts
+apexads-core = { group = "com.apexads", name = "sdk-core", version = "unspecified" }
+apexads-banner = { group = "com.apexads", name = "sdk-banner", version = "unspecified" }
+apexads-interstitial = { group = "com.apexads", name = "sdk-interstitial", version = "unspecified" }
+apexads-native = { group = "com.apexads", name = "sdk-native", version = "unspecified" }
+apexads-video = { group = "com.apexads", name = "sdk-video", version = "unspecified" }
+apexads-appopen = { group = "com.apexads", name = "sdk-appopen", version = "unspecified" }
+apexads-wallet = { group = "com.apexads", name = "sdk-wallet", version = "unspecified" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
