@@ -7,13 +7,13 @@ A **production-grade fashion e-commerce Android app** built entirely with Jetpac
 ## Screenshots
 
 <p align="center">
-  <img src="screenshots/home.jpg" alt="Home Screen — staggered product grid, hero carousel, category chips" width="300"/>
+  <img src="screenshots/home.gif" alt="Home Screen — staggered product grid, hero carousel, category chips" width="300"/>
   &nbsp;&nbsp;&nbsp;&nbsp;
   <img src="screenshots/profile.png" alt="Profile Screen — spending overview with custom Canvas LineChart" width="300"/>
 </p>
 
 <p align="center">
-  <em>Home — staggered grid, hero banners, category filter, SALE/NEW badges &nbsp;&nbsp;|&nbsp;&nbsp; Profile — Canvas LineChart, stats, account menu</em>
+  <em>Home — hero carousel, category filter, staggered grid, SALE/NEW badges &nbsp;&nbsp;|&nbsp;&nbsp; Profile — Canvas LineChart, stats, account menu</em>
 </p>
 
 ---
