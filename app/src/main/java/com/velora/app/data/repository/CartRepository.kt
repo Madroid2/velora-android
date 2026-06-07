@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,14 +26,16 @@ class CartRepository @Inject constructor() {
     val subtotal: Flow<Double> = _items.map { list -> list.sumOf { it.subtotal } }
 
     fun addItem(product: Product, size: String = "") {
-        val current = _items.value.toMutableList()
-        val idx = current.indexOfFirst { it.product.id == product.id && it.selectedSize == size }
-        if (idx >= 0) {
-            current[idx] = current[idx].copy(quantity = current[idx].quantity + 1)
-        } else {
-            current.add(CartItem(product, 1, size))
+        // Fix: was a non-atomic read-modify-write. Two concurrent callers could read the
+        // same snapshot and one write would be lost. `update {}` retries on CAS failure.
+        _items.update { current ->
+            val idx = current.indexOfFirst { it.product.id == product.id && it.selectedSize == size }
+            if (idx >= 0) {
+                current.toMutableList().also { it[idx] = it[idx].copy(quantity = it[idx].quantity + 1) }
+            } else {
+                current + CartItem(product, 1, size)
+            }
         }
-        _items.value = current
     }
 
     fun removeItem(productId: String) {

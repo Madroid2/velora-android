@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
-import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
@@ -113,15 +113,18 @@ fun HomeScreen(
                             itemCount = state.data.feedItems.count { it is FeedItem.ProductItem },
                         )
                     }
-                    items(
-                        state.data.feedItems,
-                        key = { item ->
+                    // Fix: was using indexOf(item) inside the key lambda — O(n) per item
+                    // per recomposition. Now uses itemsIndexed so the stable index is
+                    // available directly without a linear scan.
+                    itemsIndexed(
+                        items = state.data.feedItems,
+                        key = { index, item ->
                             when (item) {
                                 is FeedItem.ProductItem -> item.product.id
-                                is FeedItem.NativeAdSlot -> "native_ad_${state.data.feedItems.indexOf(item)}"
+                                is FeedItem.NativeAdSlot -> "native_ad_$index"
                             }
                         },
-                    ) { item ->
+                    ) { _, item ->
                         when (item) {
                             is FeedItem.ProductItem -> ProductCard(
                                 product = item.product,

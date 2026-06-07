@@ -27,3 +27,4 @@ out/
 # Generated
 gen/
 generated/
+*.hprof

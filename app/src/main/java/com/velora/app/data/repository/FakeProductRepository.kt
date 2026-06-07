@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -77,8 +78,11 @@ class FakeProductRepository @Inject constructor() : ProductRepository {
         allProductsFlow.map { it.find { p -> p.id == id } }
 
     override suspend fun toggleFavorite(productId: String) {
-        favorites.value = favorites.value.toMutableSet().apply {
-            if (contains(productId)) remove(productId) else add(productId)
+        // Fix: was a non-atomic read-modify-write (`favorites.value = favorites.value.toMutableSet()…`).
+        // Two concurrent callers could both read the same snapshot and one update would be lost.
+        // MutableStateFlow.update {} is atomic — it retries on CAS failure.
+        favorites.update { current ->
+            if (productId in current) current - productId else current + productId
         }
     }
 }

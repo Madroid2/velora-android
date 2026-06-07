@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,6 +64,15 @@ fun BannerAdSlot(
             .build()
         adHolder[0] = ad
         ad.load()
+    }
+
+    // Fix: BannerAd was never destroyed when the Composable left composition,
+    // causing a connection/memory leak. DisposableEffect calls destroy() on cleanup.
+    DisposableEffect(placementId) {
+        onDispose {
+            adHolder[0]?.destroy()
+            adHolder[0] = null
+        }
     }
 
     AndroidView(

@@ -37,9 +37,11 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -87,6 +89,8 @@ fun CartScreen(viewModel: CartViewModel = hiltViewModel()) {
                 if (!discountApplied) {
                     RewardedVideoOffer(onWatchAd = {
                         val activity = context as? androidx.activity.ComponentActivity ?: return@RewardedVideoOffer
+                        // Build the ad and keep a reference so we can cancel the delayed
+                        // show if the Activity is destroyed before the 800 ms fires.
                         val ad = VideoAd.Builder(VeloraApplication.PLACEMENT_CART_REWARDED)
                             .listener(object : VideoAdListener {
                                 override fun onVideoAdLoaded() {}
@@ -98,7 +102,25 @@ fun CartScreen(viewModel: CartViewModel = hiltViewModel()) {
                             })
                             .build()
                         ad.load()
-                        activity.window.decorView.postDelayed({ ad.show(activity) }, 800)
+                        // Hold the Runnable reference so it can be removed from the
+                        // message queue in DisposableEffect if the Composable leaves.
+                        val showRunnable = Runnable {
+                            if (!activity.isDestroyed && !activity.isFinishing) {
+                                ad.show(activity)
+                            }
+                        }
+                        val decorView = activity.window.decorView
+                        decorView.postDelayed(showRunnable, 800)
+                        // Attach cleanup: cancel the pending show and destroy the ad
+                        // if this Composable leaves composition before the timer fires.
+                        activity.lifecycle.addObserver(
+                            object : androidx.lifecycle.DefaultLifecycleObserver {
+                                override fun onDestroy(owner: androidx.lifecycle.LifecycleOwner) {
+                                    decorView.removeCallbacks(showRunnable)
+                                    owner.lifecycle.removeObserver(this)
+                                }
+                            }
+                        )
                     })
                 } else {
                     DiscountAppliedBanner()

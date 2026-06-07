@@ -10,9 +10,11 @@ import com.velora.app.data.repository.CartRepository
 import com.velora.app.data.repository.ProductRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -46,7 +48,7 @@ class HomeViewModel @Inject constructor(
                 productRepository.getHeroBanners(),
                 productRepository.getFeedItems(category),
             ) { banners, feed ->
-                UiState.Success(HomeUiModel(banners = banners, feedItems = feed))
+                UiState.Success(HomeUiModel(banners = banners, feedItems = feed)) as UiState<HomeUiModel>
             }
         }
         .onStart { emit(UiState.Loading) }
@@ -57,11 +59,22 @@ class HomeViewModel @Inject constructor(
             initialValue = UiState.Loading,
         )
 
+    private val _events = MutableSharedFlow<String>()
+    /** One-shot error messages for transient failures (e.g. favourite toggle). */
+    val events = _events.asSharedFlow()
+
     fun selectCategory(category: Category) {
         _selectedCategory.value = category
     }
 
     fun toggleFavorite(productId: String) {
-        viewModelScope.launch { productRepository.toggleFavorite(productId) }
+        // Fix: was a fire-and-forget launch with no error handling.
+        // Errors are surfaced via the one-shot events channel.
+        viewModelScope.launch {
+            runCatching { productRepository.toggleFavorite(productId) }
+                .onFailure { e ->
+                    _events.emit(e.message ?: "Could not update favourite")
+                }
+        }
     }
 }
